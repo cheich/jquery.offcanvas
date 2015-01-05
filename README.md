@@ -1,8 +1,7 @@
-Offcanvas jQuery Plugin
-==========
+# Offcanvas jQuery Plugin
 
-Setup
------
+## Setup
+
 Include the JS and CSS file and initialize it with:
 ```js
 $('[data-widget="offcanvas"]').offcanvas();
