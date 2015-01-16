@@ -1,5 +1,5 @@
 /*!
- * offcanvas.css v2.0 - 2015-01-09
+ * offcanvas.css v2.0.1 - 2015-01-09
  * Copyright 2014 Christoph Heich | http://cheich.github.io/Offcanvas/
  * Released under the MIT license | http://opensource.org/licenses/MIT
  */
@@ -52,7 +52,7 @@
 	height: 100%;
 	top: 0;
 	left: 0;
-	position: absolute;
+	position: relative;
 	z-index: 9901;
 }
 .offcanvas-main:after {
