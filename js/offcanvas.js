@@ -1,5 +1,5 @@
 /*!
- * offcanvas.js v2.0 - 2015-01-09
+ * offcanvas.js v2.0.1 - 2015-01-16
  * Copyright 2014 Christoph Heich | http://cheich.github.io/Offcanvas/
  * Released under the MIT license | http://opensource.org/licenses/MIT
  * TODO: Add new type: shrink
@@ -10,13 +10,14 @@ $(function($) {
 	 * Default Options
 	 */
 	var defaults = {
-		pageSelector:	'div.page',
-		position:		'left', // top|right|bottom|left
-		width:			'100%',
-		height:			'100%',
-		type:			'overlay', // push|overlay|underlay|shrink
-		injectPosition:	'before', // before|after
-		pageClick:		true, // boolean; Whether to hide on click on the main page
+		pageSelector:		'div.page',
+		position:			'left', // top|right|bottom|left
+		width:				'100%',
+		height:				'100%',
+		type:				'overlay', // push|overlay|underlay|shrink
+		injectPosition:		'before', // before|after
+		pageOverlay:		true, // boolean; Whether to add an overlay over the main page
+		pageOverlayClick:	true, // boolean; Whether to hide on click on the main page overlay ('pageOverlay' must be true)
 	}
 
 	var elem;
@@ -81,23 +82,26 @@ $(function($) {
 				});		
 		}
 		
+		/* Inject it */
 		if (elem.data('options').injectPosition == 'after') {
 			elem.insertAfter(elem.data('page'));
 		}else{
 			elem.insertBefore(elem.data('page'));
 		}
 		
-		/* Hide by click the main page */
-		if (elem.data('options').pageClick) {
-			elem.data('page').on('click', function() {
+		/* Hide by click the main page overlay */
+		if (elem.data('options').pageOverlay) {
+			if (elem.data('page').children('.offcanvas-main-overlay').length == 0) {
+				elem.data('page').prepend('<div class="offcanvas-main-overlay" />');
+			}
+			elem.data('page').children('.offcanvas-main-overlay').on('click', function() {
 				methods.hide();
 			});				
 		}
 
 		/* Hide */
-		elem.data('state', 'shown');
 		methods.hide();
-
+		
 		return this;
 	}
 
@@ -151,57 +155,42 @@ $(function($) {
 				case 'push':
 					switch (that.data('options').position) {
 						case 'top':
-							elem.data('wrapper').css('top', that.data('options').height);
+							that.data('wrapper').css('top', that.data('options').height);
 							break;
 						case 'right':
-							elem.data('wrapper').css('left', '-' + that.data('options').width);
+							that.data('wrapper').css('left', '-' + that.data('options').width);
 							break;
 						case 'bottom':
-							elem.data('wrapper').css('top', '-' + that.data('options').height);
+							that.data('wrapper').css('top', '-' + that.data('options').height);
 							break;
 						case 'left':
-							elem.data('wrapper').css('left', that.data('options').width);
+							that.data('wrapper').css('left', that.data('options').width);
 							break;
 					}
 					break;
 				
 				/* Shrink */
 				case 'shrink':
-					// switch (that.data('options').position) {
-						// case 'top':
-						// case 'bottom':
-							// that.css('height', that.data('options').height);
-							// elem.data('page').css('height', that.data('options').height);
-							// break;
-						// case 'right':
-						// case 'left':
-							// that.css('width', that.data('options').width);
-							// break;
-					// }
+					// code here
 					break;
 			
 				/* Underlay */
 				case 'underlay':
 					switch (that.data('options').position) {
 						case 'top':
-							elem.data('page').css('top', that.data('options').height);
+							that.data('page').css('top', that.data('options').height);
 							break;
 						case 'right':
-							elem.data('page').css('left', '-' + that.data('options').height);
+							that.data('page').css('left', '-' + that.data('options').width);
 							break;
 						case 'bottom':
-							elem.data('page').css('top', '-' + that.data('options').height);
+							that.data('page').css('top', '-' + that.data('options').height);
 							break;
 						case 'left':
-							elem.data('page').css('left', that.data('options').height);
+							that.data('page').css('left', that.data('options').width);
 							break;
 					}
-				
-					if ($.inArray(that.data('options').position, ['top', 'bottom']) != -1) {
-						elem.data('page').css(that.data('options').position, that.data('options').height);
-					}else{
-						elem.data('page').css(that.data('options').position, that.data('options').width);
-					}					
+					
 					break;
 			
 				/* Default: Overlay */
@@ -212,8 +201,8 @@ $(function($) {
 			}
 
 			/* Toggle classes */
-			elem.data('page').addClass('offcanvas-main-inactive');
-
+			$(elem.selector).data('page').addClass('offcanvas-main-inactive');
+		
 			/* Set state */
 			that.data('state', 'shown');
 
@@ -222,7 +211,6 @@ $(function($) {
 
 		/* Hide */
 		hide: function(that = elem) {
-
 			/* Reset all positions */
 			if ($.inArray(that.data('options').type, ['push', 'overlay']) != -1) { 
 				switch (that.data('options').position) {
@@ -236,19 +224,19 @@ $(function($) {
 						break;
 				}
 			}
-			elem.data('wrapper').css({
+			that.data('wrapper').css({
 				top: '', left: '',
 			});
-			elem.data('page').css({
+			that.data('page').css({
 				top: '', left: '',
 			});
 			
 			/* Toggle classes */
-			elem.data('page').removeClass('offcanvas-main-inactive');
+			that.data('page').removeClass('offcanvas-main-inactive');
 
 			/* Set state */
 			that.data('state', 'hidden');
-
+			
 			return this;
 		},
 
@@ -257,13 +245,13 @@ $(function($) {
 			$.each(elems[elem.data('page')], function(index, that) {
 				methods.hide(that);
 			});
-
+			
 			return this;
 		},
 
 		/* Toggle */
 		toggle: function(that = elem) {
-			if (elem.data('state') == 'hidden') {
+			if (that.data('state') == 'hidden') {
 				methods.show(that);
 			}else{
 				methods.hide(that);
