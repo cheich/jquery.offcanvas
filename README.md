@@ -1,4 +1,4 @@
-# Offcanvas jQuery Plugin
+# jQuery Offcanvas
 
 ## Setup
 
