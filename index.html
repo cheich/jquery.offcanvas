@@ -31,7 +31,7 @@
 
 			$('.example-2').offcanvas({
 				mainCanvas:	'.example-page-2',
-				mode:			'push',
+				mode:		'push',
 			});
 			$('button.example-toggle-2').click(function() {
 				$('.example-2').offcanvas('toggle');
@@ -45,7 +45,7 @@
 
 			$('.example-3').offcanvas({
 				mainCanvas:	'.example-page-3',
-				mode:			'underlay',
+				mode:		'underlay',
 			});
 			$('button.example-toggle-3').click(function() {
 				$('.example-3').offcanvas('toggle');
@@ -53,7 +53,7 @@
 
 			$('.example-4').offcanvas({
 				mainCanvas:	'.example-page-4',
-				mode:			'shrink',
+				mode:		'shrink',
 			});
 			$('button.example-toggle-4').click(function() {
 				$('.example-4').offcanvas('toggle');
@@ -71,7 +71,7 @@
 
 			$('.example-6').offcanvas({
 				mainCanvas:	'.example-page-6',
-				position:		'right',
+				position:	'right',
 			});
 			$('button.example-toggle-6').click(function() {
 				$('.example-6').offcanvas('toggle');
@@ -79,7 +79,7 @@
 
 			$('.example-7').offcanvas({
 				mainCanvas:	'.example-page-7',
-				position:		'top',
+				position:	'top',
 			});
 			$('button.example-toggle-7').click(function() {
 				$('.example-7').offcanvas('toggle');
@@ -87,7 +87,7 @@
 
 			$('.example-8').offcanvas({
 				mainCanvas:	'.example-page-8',
-				position:		'bottom',
+				position:	'bottom',
 			});
 			$('button.example-toggle-8').click(function() {
 				$('.example-8').offcanvas('toggle');
@@ -216,7 +216,7 @@ Options: &lt;length>, &lt;percentage></pre>
 Options: 'before', 'after'</pre>	
 	
 	<h3>'easing'</h3>
-	<p>Method of easing. It's recommend to include <a href="https://github.com/rstacruz/jquery.transit" target="_blank">jQuery Transit</a> to use CSS transitions. If you do not include this, jQuery Offcanvas will use jQuery's native <code>.animate()</code> function. To disable all animations, set 'animations' to false.</p>
+	<p>Method of easing. It's recommend to include <a href="https://github.com/rstacruz/jquery.transit" target="_blank">jQuery Transit</a> to use CSS transitions. If you do not include this, jQuery Offcanvas will use jQuery's native <code>.animate()</code> function. To disable all animations, set 'duration' to 0 (zero).</p>
 	<p>Note: If you use an other easing instead of 'linear' and CSS3 transitions are not supported in the browser, you should include a plugin, just like <a href="http://gsgd.co.uk/sandbox/jquery/easing/" target="_blank">jQuery Easing Plugin</a> or <a href="http://jqueryui.com/" target="_blank">jQuery UI</a></p>
 	<pre>Default: 'linear'
 Options: 'linear', 'ease', 'in', 'out', 'in-out', 'snap', 'easeOutCubic', 'easeInOutCubic', 'easeInCirc', 'easeOutCirc', 'easeInOutCirc', 'easeInExpo', 'easeOutExpo', 'easeInOutExpo', 'easeInQuad', 'easeOutQuad', 'easeInOutQuad', 'easeInQuart', 'easeOutQuart', 'easeInOutQuart', 'easeInQuint', 'easeOutQuint', 'easeInOutQuint', 'easeInSine', 'easeOutSine', 'easeInOutSine', 'easeInack', 'easeOutBack', 'easeInOutBack'</pre>
@@ -248,7 +248,7 @@ Options: integer</pre>
 	
 	<h3>'cloneElement'</h3>
 	<p>Clone the off-canvas element instead of moving it to the right position.</p>
-	<pre>Default: true
+	<pre>Default: false
 Options: boolean (true/false)</pre>
 	
 	<h2>Public methods</h2>
@@ -267,7 +267,7 @@ $('.offcanvas').show();</pre>
 	<pre>Example: 
 $('.offcanvas').toggle();</pre>	
 	
-	<h3>'hideAll'</h3>
+	<h3>'hideAll' (comming soon)</h3>
 	<p>Hide all elements which are linked with the current main canvas.</p>
 	<pre>Example: 
 $('.offcanvas').hideAll();</pre>	
