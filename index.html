@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Offcanvas</title>
+	<title>jQuery Offcanvas</title>
 	<meta charset="UTF-8" />
 
-
-	<link rel="stylesheet" type="text/css" href="../css-basics/css/basics.min.css" />
+	<!-- CSS libraries -->
+	<link rel="stylesheet" type="text/css" href="vendor/css/normalize.css" />
+	<link rel="stylesheet" type="text/css" href="vendor/css/basics.min.css" />
 
 	<!-- jQuery libraries -->
-	<script type="text/javascript" src="js/vendor/jquery.min.js"></script>
-	<script type="text/javascript" src="_js/vendor/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="vendor/js/jquery.min.js"></script>
+	<script type="text/javascript" src="vendor/js/jquery.transit.js"></script>
 
 	<!-- Offcanvas -->
-	<link rel="stylesheet" type="text/css" href="css/offcanvas.css" />
-	<script type="text/javascript" src="js/offcanvas.js"></script>
+	<link rel="stylesheet" type="text/css" href="src/css/jquery.offcanvas.css" />
+	<script type="text/javascript" src="src/js/jquery.offcanvas.js"></script>
 
 	<!-- UI Widgets and Theme Toggle -->
 	<script type="text/javascript">
@@ -22,35 +23,37 @@
 			 * Types
 			 */
 			$('.example-1').offcanvas({
-				pageSelector:	'.example-page-1',
-				width:			'80%',
+				mainCanvas:	'.example-page-1',
 			});
 			$('button.example-toggle-1').click(function() {
 				$('.example-1').offcanvas('toggle');
 			});
 
 			$('.example-2').offcanvas({
-				pageSelector:	'.example-page-2',
-				width:			'80%',
-				type:			'push'
+				mainCanvas:	'.example-page-2',
+				mode:			'push',
 			});
 			$('button.example-toggle-2').click(function() {
 				$('.example-2').offcanvas('toggle');
 			});
+			$('button.example-toggle-2s').click(function() {
+				$('.example-2').offcanvas('show');
+			});
+			$('button.example-toggle-2h').click(function() {
+				$('.example-2').offcanvas('hide');
+			});
 
 			$('.example-3').offcanvas({
-				pageSelector:	'.example-page-3',
-				width:			'80%',
-				type:			'underlay'
+				mainCanvas:	'.example-page-3',
+				mode:			'underlay',
 			});
 			$('button.example-toggle-3').click(function() {
 				$('.example-3').offcanvas('toggle');
 			});
 
 			$('.example-4').offcanvas({
-				pageSelector:	'.example-page-4',
-				width:			'80%',
-				type:			'shrink'
+				mainCanvas:	'.example-page-4',
+				mode:			'shrink',
 			});
 			$('button.example-toggle-4').click(function() {
 				$('.example-4').offcanvas('toggle');
@@ -60,16 +63,14 @@
 			 * Positions
 			 */
 			$('.example-5').offcanvas({
-				pageSelector:	'.example-page-5',
-				width:			'80%',
+				mainCanvas:	'.example-page-5',
 			});
 			$('button.example-toggle-5').click(function() {
 				$('.example-5').offcanvas('toggle');
 			});
 
 			$('.example-6').offcanvas({
-				pageSelector:	'.example-page-6',
-				width:			'80%',
+				mainCanvas:	'.example-page-6',
 				position:		'right',
 			});
 			$('button.example-toggle-6').click(function() {
@@ -77,8 +78,7 @@
 			});
 
 			$('.example-7').offcanvas({
-				pageSelector:	'.example-page-7',
-				height:			'80%',
+				mainCanvas:	'.example-page-7',
 				position:		'top',
 			});
 			$('button.example-toggle-7').click(function() {
@@ -86,8 +86,7 @@
 			});
 
 			$('.example-8').offcanvas({
-				pageSelector:	'.example-page-8',
-				height:			'80%',
+				mainCanvas:	'.example-page-8',
 				position:		'bottom',
 			});
 			$('button.example-toggle-8').click(function() {
@@ -99,15 +98,17 @@
 	<style type="text/css">
 		body {
 			background: #fff;
+			padding: 5px 1.2%;
 		}
 		.offcanvas-viewport {
 			background: #efefef;
 			border: 1px solid #999;
-			width: 90%;
-			height: 200px;
+			margin: 5px;
 		}
 		.offcanvas-main {
 			background: #efefef;
+			text-align: center;
+			height: 200px;
 		}
 		.offcanvas-viewport .page {
 			width: 100%;
@@ -117,175 +118,162 @@
 			color: #eee;
 			text-align: center;
 		}
-		.offcanvas-main:after {
+		.offcanvas-main-overlay {
 			background: rgba(0, 0, 0, .5);
 		}
-		.offcanvas-main.offcanvas-main-inactive:after {
-			cursor: pointer;
-		}
-		
-		/**
-		 * Transitions
-		 */
-		.offcanvas-wrapper {
-			transition: 1s;
-		}
-		.offcanvas-left {
-			transition: left 1s;
-		}
-		.offcanvas-right {
-			transition: right 1s;
-		}
-		.offcanvas-top {
-			transition: top 1s;
-		}
-		.offcanvas-bottom {
-			transition: bottom 1s;
-		}
-		.offcanvas-main {
-			transition: top 1s, right 1s, bottom 1s, left 1s;
-		}
-		.offcanvas-main:after {
-			background: rgba(0, 0, 0, .5);
-			transition: visibility 0s 1s, opacity 1s; /* Required for smooth fade-in-out */
-		}
-		.offcanvas-main.offcanvas-main-inactive:after {
-			transition: opacity 1s;
+		pre {
+			white-space: pre-wrap;
 		}
 	</style>
 </head>
 <body>
-	<h1>jQuery Offcanvas Plugin</h1>
-	<h2>Types</h2>
+	<h1>jQuery Offcanvas</h1>
+	<h2>Options</h2>
+	
+	<h3>'mode'</h3>
+	<p>The mode of the off-canvas effect.</p>
+	<pre>Default: 'overlay'
+Options: 'overlay', 'push', 'underlay', 'shrink' (comming soon)</pre>	
 	<div class="grid-row">
 		<div class="grid-col-3">
-			<h3>'overlay' (default)</h3>
-			<div class="example-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-			<div class="example-page-1">This is the main page</div>
+			<h4>'overlay' (default)</h4>
+			<div class="example-1">This is the off-canvas element</div>
+			<div class="example-page-1">This is the main canvas</div>
 			<button class="example-toggle-1">Toggle</button>
 		</div>
 		<div class="grid-col-3">
-			<h3>'push'</h3>
-			<div class="example-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-			<div class="example-page-2">This is the main page</div>
+			<h4>'push'</h4>
+			<div class="example-2">This is the off-canvas element</div>
+			<div class="example-page-2">This is the main canvas</div>
 			<button class="example-toggle-2">Toggle</button>
+			<button class="example-toggle-2s">Show</button>
+			<button class="example-toggle-2h">Hide</button>
 		</div>
 		<div class="grid-col-3">
-			<h3>'underlay'</h3>
-			<div class="example-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-			<div class="example-page-3">This is the main page</div>
+			<h4>'underlay'</h4>
+			<div class="example-3">This is the off-canvas element</div>
+			<div class="example-page-3">This is the main canvas</div>
 			<button class="example-toggle-3">Toggle</button>
 		</div>
 		<div class="grid-col-3">
-			<h3>'shrink' (comming soon)</h3>
-			<div class="example-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-			<div class="example-page-4">This is the main page</div>
+			<h4>'shrink' (comming soon)</h4>
+			<div class="example-4">This is the off-canvas element</div>
+			<div class="example-page-4">This is the main canvas</div>
 			<button class="example-toggle-4">Toggle</button>	
 		</div>
 	</div>
 	
-	<h2>Positions</h2>
+	<h3>'position'</h3>
+	<p>The position of the off-canvas element, relative to the main canvas.</p>
+	<pre>Default: 'left'
+Options: 'left', 'right', 'top', 'bottom'</pre>	
 	<div class="grid-row">
 		<div class="grid-col-3">
-			<h3>'left' (default)</h3>
-			<div class="example-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-			<div class="example-page-5">This is the main page</div>
+			<h4>'left' (default)</h4>
+			<div class="example-5">This is the off-canvas element</div>
+			<div class="example-page-5">This is the main canvas</div>
 			<button class="example-toggle-5">Toggle</button>
 		</div>
 		<div class="grid-col-3">
-			<h3>'right'</h3>
-			<div class="example-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-			<div class="example-page-6">This is the main page</div>
+			<h4>'right'</h4>
+			<div class="example-6">This is the off-canvas element</div>
+			<div class="example-page-6">This is the main canvas</div>
 			<button class="example-toggle-6">Toggle</button>
 		</div>
 		<div class="grid-col-3">
-			<h3>'top'</h3>
-			<div class="example-7">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-			<div class="example-page-7">This is the main page</div>
+			<h4>'top'</h4>
+			<div class="example-7">This is the off-canvas element</div>
+			<div class="example-page-7">This is the main canvas</div>
 			<button class="example-toggle-7">Toggle</button>
 		</div>
 		<div class="grid-col-3">
-			<h3>'bottom'</h3>
-			<div class="example-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
-			<div class="example-page-8">This is the main page</div>
+			<h4>'bottom'</h4>
+			<div class="example-8">This is the off-canvas element</div>
+			<div class="example-page-8">This is the main canvas</div>
 			<button class="example-toggle-8">Toggle</button>
 		</div>
 	</div>
 	
-	<h2>Other options</h2>
-	<h3>'pageSelector'</h3>
-	<p>The main page selector. Note: Don't set it to 'body'! Use any children of the body-tag. (Default: 'div.page')</p>
+	<h3>'mainCanvas'</h3>
+	<p>The main canvas selector or jQuery object.<br />
+	<strong>Note: Don't set it to 'body'!</strong> This plug-in wraps certain elements around the main canvas, so the main canvas could not be the body-tag. You can use a div, that wraps all the content of your page.</p>
+	<pre>Default: '.main-canvas'
+Options: jQuery selector or jQuery object</pre>	
 	
 	<h3>'width'</h3>
-	<p>The width of the off-canvas element. (Default: '100%')</p>
+	<p>The width of the off-canvas element.</p>
+	<pre>Default: '100%'
+Options: &lt;length>, &lt;percentage></pre>	
 	
 	<h3>'height'</h3>
-	<p>The height of the off-canvas element. (Default: '100%')</p>
+	<p>The height of the off-canvas element.</p>
+	<pre>Default: '100%'
+Options: &lt;length>, &lt;percentage></pre>	
 	
 	<h3>'injectPosition'</h3>
-	<p>Inject the off-canvas element 'before' or 'after' the page? (Default: 'before')</p>
+	<p>Inject position of the off-canvas element.</p>
+	<pre>Default: 'before'
+Options: 'before', 'after'</pre>	
 	
-	<h3>'pageClick'</h3>
-	<p>Whether or not to hide the off-canvas element by click on the inactive page. (Boolean, Default: true)</p>
+	<h3>'easing'</h3>
+	<p>Method of easing. It's recommend to include <a href="https://github.com/rstacruz/jquery.transit" target="_blank">jQuery Transit</a> to use CSS transitions. If you do not include this, jQuery Offcanvas will use jQuery's native <code>.animate()</code> function. To disable all animations, set 'animations' to false.</p>
+	<p>Note: If you use an other easing instead of 'linear' and CSS3 transitions are not supported in the browser, you should include a plugin, just like <a href="http://gsgd.co.uk/sandbox/jquery/easing/" target="_blank">jQuery Easing Plugin</a> or <a href="http://jqueryui.com/" target="_blank">jQuery UI</a></p>
+	<pre>Default: 'linear'
+Options: 'linear', 'ease', 'in', 'out', 'in-out', 'snap', 'easeOutCubic', 'easeInOutCubic', 'easeInCirc', 'easeOutCirc', 'easeInOutCirc', 'easeInExpo', 'easeOutExpo', 'easeInOutExpo', 'easeInQuad', 'easeOutQuad', 'easeInOutQuad', 'easeInQuart', 'easeOutQuart', 'easeInOutQuart', 'easeInQuint', 'easeOutQuint', 'easeInOutQuint', 'easeInSine', 'easeOutSine', 'easeInOutSine', 'easeInack', 'easeOutBack', 'easeInOutBack'</pre>
 	
-	<h2>Methods</h2>
+	<h3>'duration'</h3>
+	<p>Duration of effects in ms. Set it to 0 (zero) to disable animations. (Doesn't include main canvas overlay)</p>
+	<pre>Default: $.fx.speeds._default (Default jQuery speed: 400)
+Options: integer</pre>
+	
+	<h3>'animateFallback'</h3>
+	<p>Enable/Disable fallback to native jQuery <code>.animate()</code>.</p>
+	<pre>Default: true
+Options: boolean (true/false)</pre>
+	
+	<h3>'mainCanvasOverlay'</h3>
+	<p>Should there be an overlay over the main canvas, if any off-canvas element is active?</p>
+	<pre>Default: true
+Options: boolean (true/false)</pre>	
+	
+	<h3>'mainCanvasOverlayClick'</h3>
+	<p>Should the main canvas overlay be click-able to hide current off-canvas element? (Requires 'mainCanvasOverlay' to be true)</p>
+	<pre>Default: true
+Options: boolean (true/false)</pre>	
+	
+	<h3>'mainCanvasOverlayDuration'</h3>
+	<p>Duration of fade effect of the main canvas overlay in ms. Set it to 0 (zero) to disable this effect. (Requires 'mainCanvasOverlay' to be true)</p>
+	<pre>Default: $.fx.speeds._default (Default jQuery speed: 400)
+Options: integer</pre>	
+	
+	<h3>'cloneElement'</h3>
+	<p>Clone the off-canvas element instead of moving it to the right position.</p>
+	<pre>Default: true
+Options: boolean (true/false)</pre>
+	
+	<h2>Public methods</h2>
 	<h3>'hide'</h3>
-	<p>Hide current off-canvas element</p>
+	<p>Hide current off-canvas element.</p>
+	<pre>Example: 
+$('.offcanvas').hide();</pre>	
 	
 	<h3>'show'</h3>
-	<p>Show current off-canvas element</p>
+	<p>Show current off-canvas element.</p>
+	<pre>Example: 
+$('.offcanvas').show();</pre>	
 	
 	<h3>'toggle'</h3>
-	<p>Toggle current off-canvas element</p>
+	<p>Toggle current off-canvas element.</p>
+	<pre>Example: 
+$('.offcanvas').toggle();</pre>	
 	
 	<h3>'hideAll'</h3>
-	<p>Hide all elements which are linked with the current pageSelector</p>
+	<p>Hide all elements which are linked with the current main canvas.</p>
+	<pre>Example: 
+$('.offcanvas').hideAll();</pre>	
 	
 	<h2>Effects</h2>
-	<p>This plug-in doesn't contain any kind of effects. All animations and effects are done with CSS3 transitions, 'cause jQuery animations can be laggy on mobile devices.</p>
-	<p>Required styles depending on the type and the position</p>
-	<h3>Slide the off-canvas</h3>
-	<h4>Type: 'push'</h4>
-	<p><pre>
-.offcanvas-wrapper {
-	transition: 1s;
-}	
-</pre></p>
-
-	<h4>Type: 'overlay'</h4>
-	<p><pre>
-.offcanvas-top {
-	transition: top 1s;
-}
-.offcanvas-right {
-	transition: right 1s;
-}
-.offcanvas-bottom {
-	transition: bottom 1s;
-}
-.offcanvas-left {
-	transition: left 1s;
-}
-</pre></p>
-
-	<h4>Type: 'underlay'</h4>
-	<p><pre>
-.offcanvas-main {
-	transition: top 1s, right 1s, bottom 1s, left 1s;
-}
-</pre></p>
-
-	<h4>Type: 'Shrink' (comming soon)</h4>
-	<p>-/-</p>
-	
-	<h3>Fade main page overlay</h3>
-	<p>By default, the main page overlay is transparent. You can set e.g. <code>background: rgba(0, 0, 0, .5);</code> to <code>.offcanvas-main:after</code>, to set a light transparent overlay over the main page, if any off-canvas element is shown.</p>
-	<p><pre>
-.offcanvas-main:after {
-	transition: visibility 0s 1s, opacity 1s; /* Required for smooth fade-in-out */
-}
-.offcanvas-main.offcanvas-main-hidden:after {
-	transition: opacity 1s;
-}</pre></p>
+	<p>This plug-in uses the <a href="https://github.com/rstacruz/jquery.transit" target="_blank">jQuery Transit</a> plug-in. All animations and effects are done with CSS3. If you don't want to include this plug-in, Offcanvas will use the normal jQuery $.fn.animate() function.<br />
+	It is recommend to use the Transit plug-in, 'cause CSS3 animations are smoother (Especially on mobile devices)</p>
 </body>
 </html>
