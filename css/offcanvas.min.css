@@ -1,7 +1,0 @@
-/*!
- * offcanvas.css v2.0.2 - 2015-01-16
- * Copyright 2014 Christoph Heich | http://cheich.github.io/Offcanvas/
- * Released under the MIT license | http://opensource.org/licenses/MIT
- */
-
-.offcanvas-viewport{overflow:hidden;position:relative}.offcanvas-wrapper{position:relative;width:100%;height:100%;top:0;left:0}.offcanvas-top,.offcanvas-right,.offcanvas-bottom,.offcanvas-left{position:absolute;top:auto;right:auto;bottom:auto;left:auto}.offcanvas-overlay{z-index:9902}.offcanvas-shrink.offcanvas-top.offcanvas-bottom{height:0}.offcanvas-shrink.offcanvas-left.offcanvas-right{height:0}.offcanvas-underlay{z-index:9900}.offcanvas-underlay.offcanvas-top{top:0}.offcanvas-underlay.offcanvas-right{right:0}.offcanvas-underlay.offcanvas-bottom{bottom:0}.offcanvas-underlay.offcanvas-left{left:0}.offcanvas-main{width:100%;height:100%;top:0;left:0;position:relative;z-index:9901}.offcanvas-main-overlay{position:absolute;width:100%;height:100%;top:0;left:0;z-index:9903;display:block;opacity:0;visibility:hidden;transition-delay:0}.offcanvas-main-inactive .offcanvas-main-overlay{opacity:1;visibility:visible}
