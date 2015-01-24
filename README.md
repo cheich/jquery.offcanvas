@@ -3,6 +3,10 @@
 Set any element as an off-canvas element to any element (excepts 'body' ;)).
 This plugin is ready to use for mobile sites with a hidden menu. By clicking a button, the menu will be shown.  
 
+## Important
+
+In the next version, it will be possible to use 'body' as main page. The default main canvas will be set to 'body' (Currently '.main-canvas').
+
 ## Setup
 
 Include [jquery.offcanvas.js](https://github.com/cheich/jquery.offcanvas/blob/gh-pages/src/js/jquery.offcanvas.js) and [jquery.offcanvas.css](https://github.com/cheich/jquery.offcanvas/blob/gh-pages/src/css/jquery.offcanvas.css) after jQuery
