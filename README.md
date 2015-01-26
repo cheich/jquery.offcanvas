@@ -1,10 +1,6 @@
 # [jQuery Offcanvas](http://cheich.github.io/jquery.offcanvas/)
 
-[![Latest Stable Version](https://poser.pugx.org/laravelbook/ardent/v/stable.svg)](https://packagist.org/packages/laravelbook/ardent)
-[![License](https://poser.pugx.org/laravelbook/ardent/license.svg)](https://packagist.org/packages/laravelbook/ardent)
-[![Total Downloads](https://poser.pugx.org/laravelbook/ardent/downloads.svg)](https://packagist.org/packages/laravelbook/ardent)
-[![Monthly Downloads](https://poser.pugx.org/laravelbook/ardent/d/monthly.png)](https://packagist.org/packages/laravelbook/ardent)
-[![Daily Downloads](https://poser.pugx.org/laravelbook/ardent/d/daily.png)](https://packagist.org/packages/laravelbook/ardent)
+[![License](https://poser.pugx.org/laravelbook/ardent/license.svg)](https://github.com/cheich/jquery.offcanvas/blob/gh-pages/LICENSE.md)
 
 Set any element as an off-canvas element to any element.
 
