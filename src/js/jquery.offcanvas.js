@@ -1,9 +1,8 @@
 /*!
- * jquery.offcanvas.js v2.1 - 2015-01-21
+ * jquery.offcanvas.js v2.2 - 2015-01-26
  * Copyright 2014 Christoph Heich | http://cheich.github.io/Offcanvas/
- * Released under the MIT license | http://opensource.org/licenses/MIT
+ * Released under the MIT license | https://github.com/cheich/jquery.offcanvas/blob/gh-pages/LICENSE.md
  * @TODO: Add new mode: shrink
- * @TODO: multiple elements with same parent
  */
 
 $(function($) {
@@ -13,24 +12,24 @@ $(function($) {
 	 *  ==========================================================
 	 */
 	var defaults = {
-		mainCanvas:					'.main-canvas',
+		/* Off-canvas */
 		position:					'left', // top|right|bottom|left
-		width:						'100%',
-		height:						'100%',
+		width:						'100%', // <length>, <percentage>
+		height:						'100%', // <length>, <percentage>
 		mode:						'overlay', // push|overlay|underlay|shrink
 		injectPosition:				'before', // before|after
-		cloneElement:				false,
+		cloneElement:				true,
 		animateFallback:			true,
+		easing:						'linear',
+		duration:					$.fx.speeds._default, // Default jQuery speed
 
+		/* Main canvas */
+		mainCanvas:					'body', // Selector or jQuery object
 		mainCanvasOverlay:			true, // Add an overlay over the main canvas
 		mainCanvasOverlayClick:		true, // Hide on click on the main canvas overlay
-		mainCanvasOverlayDuration:	$.fx.speeds._default,
-
-		easing:						'linear',
-		duration:					$.fx.speeds._default,
+		mainCanvasOverlayDuration:	$.fx.speeds._default, // Default jQuery speed
 	}
 
-	// var oc = {}; // Off-canvas namespace
 	var mainCount = 0;
 	var elemCount = 0;
 
@@ -49,7 +48,7 @@ $(function($) {
 		 * Initialization
 		 */
 		var init = function(settings) {
-		
+
 			/* Counter */
 			var elemId = ++elemCount;
 
@@ -62,34 +61,40 @@ $(function($) {
 				this.data('offcanvas-linked-id', elemId);
 			}
 
-			/* Main canvas */
-			main.elem = $(opts.mainCanvas);
-			if (typeof elem.data('offcanvas-main') === 'undefined') {
-				if (typeof main.id === 'undefined') {
-					main.id = ++mainCount;
-				}
-				elem.data('offcanvas-main', main); // Bind main to element
+			/* Exceptions */
+			if ($(opts.mainCanvas).length < 1) {
+				$.error('Main canvas element not found');
 			}
 
 			/* Off-canvas */
 			if (typeof elem.data('offcanvas-id') === 'undefined') {
 				elem.data('offcanvas-id', elemId);
+				elem.addClass('offcanvas-element');
 			}
 
-			/* Exceptions */
-			if ($(opts.mainCanvas).length < 1) {
-				$.error('Main canvas element not found');
+			/* Main canvas */
+			var elems = {};
+			if (typeof $(opts.mainCanvas).data('offcanvas-elements') !== 'undefined') {
+				elems = $(opts.mainCanvas).data('offcanvas-elements');
+				main.elem = $(opts.mainCanvas).find('.offcanvas-main').first();
+			}else{
+			
+				/* Main canvas: Markup (one time) */
+				$(opts.mainCanvas).wrapInner('<div class="offcanvas-main" />');
+				main.elem = $(opts.mainCanvas).children();
+				if (typeof elem.data('offcanvas-main') === 'undefined') {
+					if (typeof main.id === 'undefined') {
+						main.id = ++mainCount;
+					}
+				}
+				main.elem.wrap('<div class="offcanvas-viewport" />')
+					.wrap('<div class="offcanvas-wrapper" />');			
 			}
-			if ($(opts.mainCanvas).get(0).tagName == 'BODY') {
-				$.error('Please do NOT use the body-tag as main canvas');
-			}
-
-			/* Markup (one time) */
-			if (!main.initialized) {
-				main.elem.addClass('offcanvas-main')
-					.wrap('<div class="offcanvas-viewport" />')
-					.wrap('<div class="offcanvas-wrapper" />');
-			}
+			
+			/* Main canvas: Bindings */
+			elem.data('offcanvas-main', main); // Bind main to element
+			elems[elemId] = elem;
+			$(opts.mainCanvas).data('offcanvas-elements', elems);
 
 			/* Off-canvas element: Classes and sizing */
 			elem.addClass('offcanvas-' + opts.position)
@@ -99,7 +104,7 @@ $(function($) {
 					height:	opts.height,
 				});
 
-			/* Off-canvas element: Position  */
+			/* Off-canvas element: Position (only mode push and overlay)  */
 			if ($.inArray(opts.mode, ['push', 'overlay']) != -1) {
 				switch (opts.position) {
 					case 'top':
@@ -122,7 +127,9 @@ $(function($) {
 
 			/* Hide by click the main canvas overlay */
 			if (opts.mainCanvasOverlay) {
-				if (main.elem.children('.offcanvas-main-overlay').length == 0) { // Add overlay
+			
+				/* Add overlay (one time) */
+				if (main.elem.children('.offcanvas-main-overlay').length == 0) {
 					main.elem.prepend('<div class="offcanvas-main-overlay" />');
 				}
 				main.elem.children('.offcanvas-main-overlay').on('click', function() {
@@ -130,7 +137,7 @@ $(function($) {
 				});
 			}
 
-			/* Hide */
+			/* Hide (Reset) */
 			methods.hide();
 		}
 
@@ -211,11 +218,16 @@ $(function($) {
 			 */
 			show: function() {
 				/* First, hide all */
-				// methods.hideAll();
+				methods.hideAll();
 
 				/* Toggle classes */
 				main.elem.addClass('offcanvas-main-inactive');
 				elem.removeClass('offcanvas-inactive');
+
+				var defProps = {
+					easing:		opts.easing,
+					duration:	opts.duration,
+				}
 
 				switch (opts.mode) {
 
@@ -223,49 +235,53 @@ $(function($) {
 					case 'push':
 						switch (opts.position) {
 							case 'top':
-								applyStyle(main.elem.parent(), { top: opts.height });
+								var wrapperProps = $.extend(true, {}, defProps, { top: opts.height });
 								break;
 							case 'right':
-								applyStyle(main.elem.parent(), { left: '-'+opts.width });
+								var wrapperProps = $.extend(true, {}, defProps, { left: '-'+opts.width });
 								break;
 							case 'bottom':
-								applyStyle(main.elem.parent(), { top: '-'+opts.height });
+								var wrapperProps = $.extend(true, {}, defProps, { top: '-'+opts.height });
 								break;
 							case 'left':
-								applyStyle(main.elem.parent(), { left: opts.width });
+							default:
+								var wrapperProps = $.extend(true, {}, defProps, { left: opts.width });
 								break;
 						}
+						applyStyle(main.elem.parent(), wrapperProps);
 						break;
 
 					/* Shrink */
 					case 'shrink':
-						// struggle code here
+						/* Struggle code here */
 						break;
 
 					/* Underlay */
 					case 'underlay':
 						switch (opts.position) {
 							case 'top':
-								applyStyle(main.elem, { top: opts.height });
+								var mainProps = $.extend(true, {}, defProps, { top: opts.height });
 								break;
 							case 'right':
-								applyStyle(main.elem, { left: '-' + opts.width });
+								var mainProps = $.extend(true, {}, defProps, { left: '-' + opts.width });
 								break;
 							case 'bottom':
-								applyStyle(main.elem, { top: '-' + opts.height });
+								var mainProps = $.extend(true, {}, defProps, { top: '-' + opts.height });
 								break;
 							case 'left':
-								applyStyle(main.elem, { left: opts.width });
+							default:
+								var mainProps = $.extend(true, {}, defProps, { left: opts.width });
 								break;
 						}
+						applyStyle(main.elem, mainProps);
 						break;
 
 					/* Default: Overlay */
 					case 'overlay':
 					default:
-						var args = {};
-						args[opts.position] = 0;
-						applyStyle(elem, args);
+						var elemProps = {};
+						elemProps[opts.position] = 0;
+						applyStyle(elem, $.extend(true, {}, defProps, elemProps));
 						break;
 				}
 
@@ -287,18 +303,19 @@ $(function($) {
 			hide: function() {
 
 				/* Reset: Element */
+				var elemProps = {}
 				if ($.inArray(opts.mode, ['overlay', 'push']) != -1) {
-					var elemProps = {
+					elemProps = {
 						easing:		opts.easing,
-						duration:	opts.duration
+						duration:	opts.duration,
 					}
 					if ($.inArray(opts.position, ['top', 'bottom']) != -1) {
 						elemProps[opts.position] = '-'+opts.height;
 					}else{
 						elemProps[opts.position] = '-'+opts.width;
 					}
-					applyStyle(elem, elemProps);
 				}
+				applyStyle(elem, elemProps);
 
 				/* Reset: Wrapper */
 				applyStyle(main.elem.parent(), {
@@ -338,8 +355,8 @@ $(function($) {
 			 * Hide all
 			 */
 			hideAll: function() {
-				$.each(elems[elem.data('mainCanvas')], function(index, elem) {
-					methods.hide();
+				$.each($(opts.mainCanvas).data('offcanvas-elements'), function(i, e) {
+					e.offcanvas('hide');
 				});
 			},
 
@@ -355,9 +372,14 @@ $(function($) {
 			},
 		}
 
+		/** ==========================================================
+		 *  = Start plugin
+		 *  ==========================================================
+		 */
+
 		/**
 		 * Cloned elements
-		 */		
+		 */
 		if (typeof elem.data('offcanvas-linked-id') !== 'undefined') {
 			var linkedId = elem.data('offcanvas-linked-id');
 			elem.each(function(i, e) {
@@ -368,7 +390,7 @@ $(function($) {
 				}
 			});
 		}
-		
+
 		/* Set shorter vars */
 		if (typeof elem.data('offcanvas-main') !== 'undefined') {
 			main = elem.data('offcanvas-main');
@@ -380,12 +402,12 @@ $(function($) {
 		/**
 		 * Call plug-in methods / options
 		 */
-		/* Find method */
+		/* Find meth - stands for methods! */
 		if (methods[methOrOpts]) {
 			if (typeof elem.data('offcanvas-id') !== 'undefined') {
 				methods[methOrOpts].apply(this, Array.prototype.slice.call(arguments, 1));
 			}else{
-				$.error('Element did not be initialized with jQuery Offcanvas');
+				$.error('Element was not initialized with jQuery Offcanvas');
 			}
 
 		/* Find options */
@@ -396,7 +418,7 @@ $(function($) {
 		}else{
 			$.error('Public method "' +  methOrOpts + '" does not exist in jQuery Offcanvas');
 		}
-		
+
 		return elem;
 	}
 }(jQuery));
