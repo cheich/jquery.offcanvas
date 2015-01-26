@@ -1,7 +1,5 @@
 # [jQuery Offcanvas](http://cheich.github.io/jquery.offcanvas/)
 
-[![License](https://poser.pugx.org/laravelbook/ardent/license.svg)](https://github.com/cheich/jquery.offcanvas/blob/gh-pages/LICENSE.md)
-
 Set any element as an off-canvas element to any element.
 
 This plugin is ready to use for mobile sites with a hidden menu. By clicking a button, the menu will be shown.  
