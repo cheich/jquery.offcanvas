@@ -1,11 +1,14 @@
 # [jQuery Offcanvas](http://cheich.github.io/jquery.offcanvas/)
 
-Set any element as an off-canvas element to any element (excepts 'body' ;)).
+[![Latest Stable Version](https://poser.pugx.org/laravelbook/ardent/v/stable.svg)](https://packagist.org/packages/laravelbook/ardent)
+[![License](https://poser.pugx.org/laravelbook/ardent/license.svg)](https://packagist.org/packages/laravelbook/ardent)
+[![Total Downloads](https://poser.pugx.org/laravelbook/ardent/downloads.svg)](https://packagist.org/packages/laravelbook/ardent)
+[![Monthly Downloads](https://poser.pugx.org/laravelbook/ardent/d/monthly.png)](https://packagist.org/packages/laravelbook/ardent)
+[![Daily Downloads](https://poser.pugx.org/laravelbook/ardent/d/daily.png)](https://packagist.org/packages/laravelbook/ardent)
+
+Set any element as an off-canvas element to any element.
+
 This plugin is ready to use for mobile sites with a hidden menu. By clicking a button, the menu will be shown.  
-
-## Important
-
-In the next version, it will be possible to use 'body' as main page. The default main canvas will be set to 'body' (Currently '.main-canvas').
 
 ## Setup
 
@@ -23,9 +26,15 @@ Initialize an off-canvas element
 $("#offcanvas-box").offcanvas();
 ```
 
+## Dependencies
+
+jQuery Offcanvas requires jQuery 1.7.0 or higher. Certainly, it works with jQuery 2.x as well.
+
+It is not necessary, but the animations are much smoother with the newest version of [jQuery Transit](https://github.com/rstacruz/jquery.transit).
+
 ## How to use
 
-After initialization, call the public methods show/hide/toggle by clicking a link or a button
+After initialization, call the public methods `show`, `hide`, or `toggle` by clicking a link or a button
 
 ``` javascript
 $("#offcanvas-box").offcanvas();
@@ -35,16 +44,39 @@ $("button#toggle").click(function() {
 });
 ```
 
-## Important Options
+## Options
 
 To see the full documentation, go to the [project page](http://cheich.github.io/jquery.offcanvas/)
 
+All options and there default values:
+
+``` javascript
+$("#offcanvas-box").offcanvas({
+	position:					'left', // top|right|bottom|left
+	width:						'100%', // <length>, <percentage>
+	height:						'100%', // <length>, <percentage>
+	mode:						'overlay', // push|overlay|underlay|shrink
+	injectPosition:				'before', // before|after
+	cloneElement:				true,
+	animateFallback:			true,
+	easing:						'linear',
+	duration:					$.fx.speeds._default, // Default jQuery speed
+
+	mainCanvas:					'body', // Selector or jQuery object
+	mainCanvasOverlay:			true, // Add an overlay over the main canvas
+	mainCanvasOverlayClick:		true, // Hide on click on the main canvas overlay
+	mainCanvasOverlayDuration:	$.fx.speeds._default, // Default jQuery speed
+});
+```
+
 ### 'mainCanvas'
 
-The main canvas selector or jQuery object.
-Note: Don't set it to 'body'! This plug-in wraps certain elements around the main canvas, so the main canvas could not be the body-tag. You can use a div, that wraps all the content of your page.
+Main canvas as selector or jQuery object.
 
-	Default: '.main-canvas'
+All content of this element will be wrapped into a 'div' and gets the class `.offcanvas-main`.
+Then, all off-canvas elements and markups will be inserted into your main canvas element.
+
+	Default: 'body'
 	Options: jQuery selector or jQuery object
 
 ### 'mode'
@@ -68,5 +100,19 @@ Width/Height of the off-canvas element.
 	Default: '100%'
 	Options: <length>, <percentage>
 	
+## Release Notes
+### v2.2
+ * NEW: Multiple elements on one main canvas
+ * NEW: Main canvas can be 'body' -> default set to 'body'
+ * NEW: Method 'hideAll' hides all off-canvas elements with same main canvas
+ * NEW: Ready for navigations out of the box
+ * FIX: Duration doesn't work on 'show' event
+ 
+### v2.1
+ * NEW: Clone element optional
+ * NEW: Animation with jQuery Transit; Fallback to jQuery's animate function
+ * NEW: More options
+ * FIX: Some bugfixes
+	
 ## License
-jQuery Offcanvas is released under the [MIT license](http://opensource.org/licenses/MIT)
+jQuery Offcanvas is released under the [MIT license](https://github.com/cheich/jquery.offcanvas/blob/gh-pages/LICENSE.md)

@@ -16,14 +16,55 @@
 	<link rel="stylesheet" type="text/css" href="src/css/jquery.offcanvas.css" />
 	<script type="text/javascript" src="src/js/jquery.offcanvas.js"></script>
 
-	<!-- UI Widgets and Theme Toggle -->
+	<!-- Init -->
 	<script type="text/javascript">
-		$(document).ready(function() {			 
+		$(document).ready(function() {				
+			/**
+			 * Multiple elements
+			 */
+			$('.example-multi-1').offcanvas({ 
+				position: 		'top',
+				mode:			'overlay',
+				mainCanvas: 	'.example-page-multi',
+				cloneElement:	false,
+			});
+			$('.example-multi-2').offcanvas({ 
+				position: 		'left',
+				mode:			'push',
+				mainCanvas: 	'.example-page-multi',
+				cloneElement	:false,
+			});
+			$('.example-multi-3').offcanvas({ 
+				position: 		'bottom',
+				mode:			'underlay',
+				mainCanvas: 	'.example-page-multi',
+				cloneElement:	false,
+			});
+			$('.example-multi-4').offcanvas({ 
+				position: 		'right',
+				mode:			'overlay',
+				mainCanvas: 	'.example-page-multi',
+				cloneElement:	false,
+			});			
+			$('.example-multi-1-toggle').click(function() {
+				$('.example-multi-1').offcanvas('toggle');
+			});
+			$('.example-multi-2-toggle').click(function() {
+				$('.example-multi-2').offcanvas('toggle');
+			});
+			$('.example-multi-3-toggle').click(function() {
+				$('.example-multi-3').offcanvas('toggle');
+			});
+			$('.example-multi-4-toggle').click(function() {
+				$('.example-multi-4').offcanvas('toggle');
+			});
+			
 			/**
 			 * Types
 			 */
 			$('.example-1').offcanvas({
 				mainCanvas:	'.example-page-1',
+				cloneElement: false,
 			});
 			$('button.example-toggle-1').click(function() {
 				$('.example-1').offcanvas('toggle');
@@ -32,6 +73,7 @@
 			$('.example-2').offcanvas({
 				mainCanvas:	'.example-page-2',
 				mode:		'push',
+				cloneElement: false,
 			});
 			$('button.example-toggle-2').click(function() {
 				$('.example-2').offcanvas('toggle');
@@ -46,6 +88,7 @@
 			$('.example-3').offcanvas({
 				mainCanvas:	'.example-page-3',
 				mode:		'underlay',
+				cloneElement: false,
 			});
 			$('button.example-toggle-3').click(function() {
 				$('.example-3').offcanvas('toggle');
@@ -54,6 +97,7 @@
 			$('.example-4').offcanvas({
 				mainCanvas:	'.example-page-4',
 				mode:		'shrink',
+				cloneElement: false,
 			});
 			$('button.example-toggle-4').click(function() {
 				$('.example-4').offcanvas('toggle');
@@ -64,6 +108,7 @@
 			 */
 			$('.example-5').offcanvas({
 				mainCanvas:	'.example-page-5',
+				cloneElement: false,
 			});
 			$('button.example-toggle-5').click(function() {
 				$('.example-5').offcanvas('toggle');
@@ -72,6 +117,7 @@
 			$('.example-6').offcanvas({
 				mainCanvas:	'.example-page-6',
 				position:	'right',
+				cloneElement: false,
 			});
 			$('button.example-toggle-6').click(function() {
 				$('.example-6').offcanvas('toggle');
@@ -80,6 +126,7 @@
 			$('.example-7').offcanvas({
 				mainCanvas:	'.example-page-7',
 				position:	'top',
+				cloneElement: false,
 			});
 			$('button.example-toggle-7').click(function() {
 				$('.example-7').offcanvas('toggle');
@@ -88,6 +135,7 @@
 			$('.example-8').offcanvas({
 				mainCanvas:	'.example-page-8',
 				position:	'bottom',
+				cloneElement: false,
 			});
 			$('button.example-toggle-8').click(function() {
 				$('.example-8').offcanvas('toggle');
@@ -100,18 +148,15 @@
 			background: #fff;
 			padding: 5px 1.2%;
 		}
-		.offcanvas-viewport {
+		[class*="example-page-"] {
+			margin: 5px;
+			height: 160px;
 			background: #efefef;
 			border: 1px solid #999;
-			margin: 5px;
+			text-align: center;
 		}
 		.offcanvas-main {
 			background: #efefef;
-			text-align: center;
-			height: 200px;
-		}
-		.offcanvas-viewport .page {
-			width: 100%;
 		}
 		.offcanvas-left, .offcanvas-right, .offcanvas-top, .offcanvas-bottom {
 			background: #444;
@@ -128,12 +173,47 @@
 </head>
 <body>
 	<h1>jQuery Offcanvas</h1>
-	<h2>Options</h2>
 	
+	<h2>Styling</h2>
+	<p>Styling is easy with a view classes:</p>
+	<h3>Main canvas ('.offcanvas-main')</h3>
+	<p>The main canvas gets class <code>.offcanvas-main</code>. If u use the body-tag as main canvas, you can apply your style to both: The body-tag AND the .offcanvas-main class.</p>
+<pre>Example:
+body, .offcanvas-main {
+  background-color: #abcdef;
+}
+</pre>
+
+	<h3>Off-canvas element</h3>
+	<p>You can give your off-canvas element any class or ID you want to and style it like you want.</p>
+	
+	<h3>Main Overlay ('.offcanvas-main-overlay')</h3>
+	<p>If any off-canvas element is shown, there will be an overlay faded-in over the main canvas.<br />
+	By default, the overlay is transparent but clickable, to hide the off-canvas.<br />
+	To disable this feature, set <code>mainCanvasOverlay: false</code>.</p>
+	<pre>Example:
+.offcanvas-main-overlay {
+  background: rgba(0, 0, 0, .5);
+}</pre>
+	
+	<h2>Multiple elements</h2>
+	<p>Since version 2.2, it's very easy to bind more elements to one main canvas (e.g. 'body').<br />
+	Each element can have there own mode and options, cool.</p>
+	<div class="example-multi-1">This is element #1</div>
+	<div class="example-multi-2">This is element #2</div>
+	<div class="example-multi-3">This is element #3</div>
+	<div class="example-multi-4">This is element #4</div>
+	<div class="example-page-multi">This is the main canvas of 4 off-canvas elements</div>
+	<button class="example-multi-1-toggle">Toggle #1</button>
+	<button class="example-multi-2-toggle">Toggle #2</button>
+	<button class="example-multi-3-toggle">Toggle #3</button>
+	<button class="example-multi-4-toggle">Toggle #4</button>
+	
+	<h2>Options</h2>	
 	<h3>'mode'</h3>
 	<p>The mode of the off-canvas effect.</p>
 	<pre>Default: 'overlay'
-Options: 'overlay', 'push', 'underlay', 'shrink' (comming soon)</pre>	
+Options: 'overlay', 'push', 'underlay'<span style="opacity: .5">, 'shrink' (comming soon)</span></pre>	
 	<div class="grid-row">
 		<div class="grid-col-3">
 			<h4>'overlay' (default)</h4>
@@ -146,8 +226,6 @@ Options: 'overlay', 'push', 'underlay', 'shrink' (comming soon)</pre>
 			<div class="example-2">This is the off-canvas element</div>
 			<div class="example-page-2">This is the main canvas</div>
 			<button class="example-toggle-2">Toggle</button>
-			<button class="example-toggle-2s">Show</button>
-			<button class="example-toggle-2h">Hide</button>
 		</div>
 		<div class="grid-col-3">
 			<h4>'underlay'</h4>
@@ -155,11 +233,11 @@ Options: 'overlay', 'push', 'underlay', 'shrink' (comming soon)</pre>
 			<div class="example-page-3">This is the main canvas</div>
 			<button class="example-toggle-3">Toggle</button>
 		</div>
-		<div class="grid-col-3">
+		<div class="grid-col-3" style="opacity: .5;">
 			<h4>'shrink' (comming soon)</h4>
 			<div class="example-4">This is the off-canvas element</div>
 			<div class="example-page-4">This is the main canvas</div>
-			<button class="example-toggle-4">Toggle</button>	
+			<button disabled class="example-toggle-4">Toggle</button>	
 		</div>
 	</div>
 	
@@ -195,9 +273,10 @@ Options: 'left', 'right', 'top', 'bottom'</pre>
 	</div>
 	
 	<h3>'mainCanvas'</h3>
-	<p>The main canvas selector or jQuery object.<br />
-	<strong>Note: Don't set it to 'body'!</strong> This plug-in wraps certain elements around the main canvas, so the main canvas could not be the body-tag. You can use a div, that wraps all the content of your page.</p>
-	<pre>Default: '.main-canvas'
+	<p>Main canvas as selector or jQuery object.<br />
+	All content of this element will be wrapped into a 'div' and gets the class <code>.offcanvas-main</code>.<br />
+	Then, all off-canvas elements and markups will be inserted into your main canvas element.</p>
+	<pre>Default: 'body'
 Options: jQuery selector or jQuery object</pre>	
 	
 	<h3>'width'</h3>
@@ -211,7 +290,7 @@ Options: &lt;length>, &lt;percentage></pre>
 Options: &lt;length>, &lt;percentage></pre>	
 	
 	<h3>'injectPosition'</h3>
-	<p>Inject position of the off-canvas element.</p>
+	<p>Inject position of the off-canvas element relative to the main canvas.</p>
 	<pre>Default: 'before'
 Options: 'before', 'after'</pre>	
 	
@@ -247,33 +326,34 @@ Options: boolean (true/false)</pre>
 Options: integer</pre>	
 	
 	<h3>'cloneElement'</h3>
-	<p>Clone the off-canvas element instead of moving it to the right position.</p>
-	<pre>Default: false
+	<p>Clone the off-canvas element instead of moving it to the right position.<br />
+	By default it's <code>true</code>, 'cause this plugin is designed to use it for mobile navigations out of the box.</p>
+	<pre>Default: true
 Options: boolean (true/false)</pre>
 	
 	<h2>Public methods</h2>
 	<h3>'hide'</h3>
 	<p>Hide current off-canvas element.</p>
 	<pre>Example: 
-$('.offcanvas').hide();</pre>	
+$('.offcanvas').offcanvas('hide');</pre>	
 	
 	<h3>'show'</h3>
 	<p>Show current off-canvas element.</p>
 	<pre>Example: 
-$('.offcanvas').show();</pre>	
+$('.offcanvas').offcanvas('show');</pre>	
 	
 	<h3>'toggle'</h3>
 	<p>Toggle current off-canvas element.</p>
 	<pre>Example: 
-$('.offcanvas').toggle();</pre>	
+$('.offcanvas').offcanvas('toggle');</pre>	
 	
-	<h3>'hideAll' (comming soon)</h3>
+	<h3>'hideAll'</h3>
 	<p>Hide all elements which are linked with the current main canvas.</p>
 	<pre>Example: 
-$('.offcanvas').hideAll();</pre>	
+$('.offcanvas').offcanvas('hideAll');</pre>
 	
 	<h2>Effects</h2>
-	<p>This plug-in uses the <a href="https://github.com/rstacruz/jquery.transit" target="_blank">jQuery Transit</a> plug-in. All animations and effects are done with CSS3. If you don't want to include this plug-in, Offcanvas will use the normal jQuery $.fn.animate() function.<br />
-	It is recommend to use the Transit plug-in, 'cause CSS3 animations are smoother (Especially on mobile devices)</p>
+	<p>This plugin uses the <a href="https://github.com/rstacruz/jquery.transit" target="_blank">jQuery Transit</a> plugin. All animations and effects are done with CSS3. If you don't want to include this plugin, Offcanvas will use the normal jQuery <code>$.fn.animate()</code> function.<br />
+	It is recommend to use the Transit plugin, 'cause CSS3 animations are smoother (Especially on mobile devices)</p>
 </body>
 </html>
