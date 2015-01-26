@@ -1,4 +1,4 @@
-# [jQuery Offcanvas](http://cheich.github.io/jquery.offcanvas/)
+# [jQuery Offcanvas](https://cheich.github.io/jquery.offcanvas/)
 
 Set any element as an off-canvas element to any element.
 
@@ -40,7 +40,7 @@ $("button#toggle").click(function() {
 
 ## Options
 
-To see the full documentation, go to the [project page](http://cheich.github.io/jquery.offcanvas/)
+To see the full documentation, go to the [project page](https://cheich.github.io/jquery.offcanvas/)
 
 All options and there default values:
 
