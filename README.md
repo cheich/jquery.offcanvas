@@ -1,112 +1,88 @@
 # [jQuery Offcanvas](https://cheich.github.io/jquery.offcanvas/)
 
-Set any element as an off-canvas element to any element.
+**jQuery Offcanvas** is the easy way to arrange overloaded websites or to design user-friendly mobile navigations.
 
-This plugin is ready to use for mobile sites with a hidden menu. By clicking a button, the menu will be shown.  
+Set oversized content as off-canvas and let it flow-in, if needed - simple.
+
+Take a look at the [project page](https://cheich.github.io/jquery.offcanvas/) to see full documentation.
 
 ## Setup
 
-Include [jquery.offcanvas.js](https://github.com/cheich/jquery.offcanvas/blob/gh-pages/src/js/jquery.offcanvas.js) and [jquery.offcanvas.css](https://github.com/cheich/jquery.offcanvas/blob/gh-pages/src/css/jquery.offcanvas.css) after jQuery
+### 1. Link files
+
+Include [jquery.offcanvas.min.js](https://github.com/cheich/jquery.offcanvas/blob/master/build/js/jquery.offcanvas.min.js) and [jquery.offcanvas.min.css](https://github.com/cheich/jquery.offcanvas/blob/master/build/css/jquery.offcanvas.min.css) after the jQuery library.
 
 ``` html
-<script src='jquery.js'></script>
-<script src='jquery.offcanvas.js'></script>
-<link rel="stylesheet" href="jquery.offcanvas.css" />
+<script src='jquery.min.js'></script>
+<script src='jquery.offcanvas.min.js'></script>
+<link rel="stylesheet" href="jquery.offcanvas.min.css" />
 ```
 
-Initialize an off-canvas element
+### 2. Identify main canvas
+
+It's required to set a main canvas. By default it's `#page`. You can wrap the whole page with `div#page` or set the main canvas selector via `mainCanvas`. **Important:** It's not allowed to set `body` as main canvas 'cause all elements are wrapped.
 
 ``` javascript
-$("#offcanvas-box").offcanvas();
+$("#offcanvas-box").offcanvas({
+    mainCanvas: '#page', // Selector or jQuery object
+});
+```
+
+### 3. Initialization and usage
+
+After initialization, call a public method like `show`, `hide`, or `toggle` after e.g. clicking a link or a button.
+
+``` javascript
+$("#offcanvas-box").offcanvas(/* Pass options as object */); // Initialization
+
+$("button#toggle").click(function() {
+    $("#offcanvas-box").offcanvas("toggle"); // Toggle after click a button
+                                             // Options are bind to the element
+});
 ```
 
 ## Dependencies
 
-jQuery Offcanvas requires jQuery 1.7.0 or higher. Certainly, it works with jQuery 2.x as well.
+jQuery Offcanvas requires jQuery 1.7.0+. Certainly, it works with jQuery 2.x as well.
 
 It is not necessary, but the animations are much smoother with the newest version of [jQuery Transit](https://github.com/rstacruz/jquery.transit).
 
-## How to use
-
-After initialization, call the public methods `show`, `hide`, or `toggle` by clicking a link or a button
-
-``` javascript
-$("#offcanvas-box").offcanvas();
-
-$("button#toggle").click(function() {
-	$("#offcanvas-box").offcanvas("toggle");
-});
-```
-
 ## Options
 
-To see the full documentation, go to the [project page](https://cheich.github.io/jquery.offcanvas/)
-
-All options and there default values:
+To see the full documentation, go to the [project page](https://cheich.github.io/jquery.offcanvas/). These are the default options:
 
 ``` javascript
-$("#offcanvas-box").offcanvas({
-	position:					'left', // top|right|bottom|left
-	width:						'100%', // <length>, <percentage>
-	height:						'100%', // <length>, <percentage>
-	mode:						'overlay', // push|overlay|underlay|shrink
-	injectPosition:				'before', // before|after
-	cloneElement:				true,
-	animateFallback:			true,
-	easing:						'linear',
-	duration:					$.fx.speeds._default, // Default jQuery speed
-
-	mainCanvas:					'body', // Selector or jQuery object
-	mainCanvasOverlay:			true, // Add an overlay over the main canvas
-	mainCanvasOverlayClick:		true, // Hide on click on the main canvas overlay
-	mainCanvasOverlayDuration:	$.fx.speeds._default, // Default jQuery speed
-});
+$.fn.offcanvas.defaults = {
+    /* Off-canvas */
+    position:          'left', // top|right|bottom|left
+    mode:              'push', // push|cover|base
+    injectPosition:    'before', // before|after, relative to main canvas
+    cloneElement:      false, // Instead of moving it
+    css: {
+        width:         '100%', // <length>, <percentage>
+        height:        '100%', // <length>, <percentage>
+    },
+    jsFallback:        true, // If browser doesn't support CSS3 transitions or Transit isn't available
+    animate:           {}, // Add further animation options @see http://api.jquery.com/animate/
+    
+    /* Main canvas */
+    mainCanvas:        '#page', // Selector or jQuery object
+    mainCanvasClick:   true, // Make the main canvas click-able
+    mainCanvasAnimate: {}, // Add further animation options @see http://api.jquery.com/animate/ - Overwrites 'animate'
+    mainCanvasCss:     {}, // Add CSS styles to the main canvas
+    
+    /* Callbacks */
+    onShowBefore:      function() {}, // Triggered before the off-canvas is shown
+    onShowAfter:       function() {}, // Triggered after the off-canvas is shown
+    onHideBefore:      function() {}, // Triggered before the off-canvas is hidden
+    onHideAfter:       function() {}, // Triggered after the off-canvas is hidden
+    onMainCanvasClick: function() {}, // Triggered after clicking on the main canvas
+};
 ```
 
-### 'mainCanvas'
-
-Main canvas as selector or jQuery object.
-
-All content of this element will be wrapped into a 'div' and gets the class `.offcanvas-main`.
-Then, all off-canvas elements and markups will be inserted into your main canvas element.
-
-	Default: 'body'
-	Options: jQuery selector or jQuery object
-
-### 'mode'
-
-The mode of the off-canvas effect.
-
-	Default: 'overlay'
-	Options: 'overlay', 'push', 'underlay', 'shrink' (comming soon)
-	
-### 'position'
-
-The position of the off-canvas element, relative to the main canvas.
-
-	Default: 'left'
-	Options: 'left', 'right', 'top', 'bottom'
-	
-### 'width' and 'height'
-
-Width/Height of the off-canvas element.
-
-	Default: '100%'
-	Options: <length>, <percentage>
-	
-## Release Notes
-### v2.2
- * NEW: Multiple elements on one main canvas
- * NEW: Main canvas can be 'body' -> default set to 'body'
- * NEW: Method 'hideAll' hides all off-canvas elements with same main canvas
- * NEW: Ready for navigations out of the box
- * FIX: Duration doesn't work on 'show' event
- 
-### v2.1
- * NEW: Clone element optional
- * NEW: Animation with jQuery Transit; Fallback to jQuery's animate function
- * NEW: More options
- * FIX: Some bugfixes
-	
+## Release notes
+Each main version is mostly backward-compatible.
+See the [history](https://github.com/cheich/jquery.offcanvas/blob/master/HISTORY.md) to see all changes and fixes.
+    
 ## License
-jQuery Offcanvas is released under the [MIT license](https://github.com/cheich/jquery.offcanvas/blob/gh-pages/LICENSE.md)
+jQuery Offcanvas is released under the [MIT license](https://github.com/cheich/jquery.offcanvas/blob/master/LINCENSE.md)

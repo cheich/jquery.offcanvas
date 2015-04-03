@@ -1,43 +1,19 @@
 /*!
- * jquery.offcanvas.js v2.2 - 2015-01-26
- * Copyright 2014 Christoph Heich | http://cheich.github.io/Offcanvas/
- * Released under the MIT license | https://github.com/cheich/jquery.offcanvas/blob/gh-pages/LICENSE.md
- * @TODO: Add new mode: shrink
+ * jquery.offcanvas.js v3.0 - 2015-04-02
+ * Copyright 2014 Christoph Heich | http://cheich.github.io/jquery.offcanvas/
+ * Released under the MIT license | https://github.com/cheich/jquery.offcanvas/blob/master/LINCENSE.md
+ * @TODO: Add swipe gestures (v3.1)
  */
-
+ 
 $(function($) {
 
-	/** ==========================================================
-	 *  = Default Options
-	 *  ==========================================================
-	 */
-	var defaults = {
-		/* Off-canvas */
-		position:					'left', // top|right|bottom|left
-		width:						'100%', // <length>, <percentage>
-		height:						'100%', // <length>, <percentage>
-		mode:						'overlay', // push|overlay|underlay|shrink
-		injectPosition:				'before', // before|after
-		cloneElement:				true,
-		animateFallback:			true,
-		easing:						'linear',
-		duration:					$.fx.speeds._default, // Default jQuery speed
-
-		/* Main canvas */
-		mainCanvas:					'body', // Selector or jQuery object
-		mainCanvasOverlay:			true, // Add an overlay over the main canvas
-		mainCanvasOverlayClick:		true, // Hide on click on the main canvas overlay
-		mainCanvasOverlayDuration:	$.fx.speeds._default, // Default jQuery speed
-	}
-
-	var mainCount = 0;
 	var elemCount = 0;
 
-	$.fn.offcanvas = function(methOrOpts) {
+	$.fn.offcanvas = function(pluginArgs) {
 
 		var elem = this;
-		var opts = {}
-		var main = {}
+		var opts = {};
+		var main = {};
 
 		/** ==========================================================
 		 *  = Private functions
@@ -47,8 +23,7 @@ $(function($) {
 		/**
 		 * Initialization
 		 */
-		var init = function(settings) {
-
+		var init = function(settings) {	
 			/* Counter */
 			var elemId = ++elemCount;
 
@@ -62,61 +37,35 @@ $(function($) {
 			}
 
 			/* Exceptions */
-			if ($(opts.mainCanvas).length < 1) {
+			main.elem = $(opts.mainCanvas);
+			if (main.elem.length < 1) {
 				$.error('Main canvas element not found');
+			}else if (main.elem.get(0).tagName.toLowerCase() == 'body') {
+				$.error('Main canvas should not be "body"');
 			}
 
-			/* Off-canvas */
-			if (typeof elem.data('offcanvas-id') === 'undefined') {
-				elem.data('offcanvas-id', elemId);
-				elem.addClass('offcanvas-element');
-			}
+			/* Off-canvas: Markup */
+			elem.addClass('offcanvas-element')
+				.addClass('offcanvas-' + opts.position)
+				.addClass('offcanvas-' + opts.mode)
+				.css(opts.css);
+			elem.data('offcanvas-id', elemId);
 
 			/* Main canvas */
 			var elems = {};
-			if (typeof $(opts.mainCanvas).data('offcanvas-elements') !== 'undefined') {
-				elems = $(opts.mainCanvas).data('offcanvas-elements');
-				main.elem = $(opts.mainCanvas).find('.offcanvas-main').first();
+			if (typeof main.elem.data('offcanvas-elements') !== 'undefined') {
+				elems = main.elem.data('offcanvas-elements');
 			}else{
-			
-				/* Main canvas: Markup (one time) */
-				$(opts.mainCanvas).wrapInner('<div class="offcanvas-main" />');
-				main.elem = $(opts.mainCanvas).children();
-				if (typeof elem.data('offcanvas-main') === 'undefined') {
-					if (typeof main.id === 'undefined') {
-						main.id = ++mainCount;
-					}
-				}
-				main.elem.wrap('<div class="offcanvas-viewport" />')
-					.wrap('<div class="offcanvas-wrapper" />');			
+				/* Main canvas: Markup */
+				main.elem.addClass('offcanvas-main')
+					.css(opts.mainCanvasCss)
+					.wrap('<div class="offcanvas-viewport" />');
 			}
-			
+
 			/* Main canvas: Bindings */
 			elem.data('offcanvas-main', main); // Bind main to element
 			elems[elemId] = elem;
-			$(opts.mainCanvas).data('offcanvas-elements', elems);
-
-			/* Off-canvas element: Classes and sizing */
-			elem.addClass('offcanvas-' + opts.position)
-				.addClass('offcanvas-' + opts.mode)
-				.css({
-					width:	opts.width,
-					height:	opts.height,
-				});
-
-			/* Off-canvas element: Position (only mode push and overlay)  */
-			if ($.inArray(opts.mode, ['push', 'overlay']) != -1) {
-				switch (opts.position) {
-					case 'top':
-					case 'bottom':
-						elem.css(opts.position, '-'+opts.height);
-						break;
-					case 'right':
-					case 'left':
-					default:
-						elem.css(opts.position, '-'+opts.width);
-				}
-			}
+			main.elem.data('offcanvas-elements', elems);
 
 			/* Inject it */
 			if (opts.injectPosition == 'after') {
@@ -125,29 +74,35 @@ $(function($) {
 				elem.insertBefore(main.elem);
 			}
 
-			/* Hide by click the main canvas overlay */
-			if (opts.mainCanvasOverlay) {
-			
-				/* Add overlay (one time) */
-				if (main.elem.children('.offcanvas-main-overlay').length == 0) {
-					main.elem.prepend('<div class="offcanvas-main-overlay" />');
-				}
-				main.elem.children('.offcanvas-main-overlay').on('click', function() {
-					methods.hide();
-				});
+			/* Add overlay (one time) */
+			if (main.elem.children('.offcanvas-overlay').length == 0) {
+				main.elem.prepend('<div class="offcanvas-overlay" />');
 			}
 
-			/* Hide (Reset) */
-			methods.hide();
-		}
+			/* Bind click event */
+			if (opts.mainCanvasClick) {
+				main.elem.children('.offcanvas-overlay').on('click', function(e) {
+					elem.offcanvas('hideAll');
+					opts.onMainCanvasClick(e, elem);
+				});
+			}
+			
+			/* Still enable URI hash-fragment (Just reload it)
+			 * Error caused from inserting wrappers */
+			if (window.location.hash) {
+				window.location.hash = window.location.hash;
+			}
+			
+			/* Hide */
+			methods.refresh();
+		};
 
 		/**
 		 * Handle Options
 		 */
 		var optionHandler = function(settings) {
-
 			/* Merge defaults and options */
-			var options = $.extend(true, {}, defaults, settings);
+			var options = $.extend(true, {}, $.fn.offcanvas.defaults, settings);
 
 			/* position */
 			options.position.toLowerCase();
@@ -157,8 +112,8 @@ $(function($) {
 
 			/* mode */
 			options.mode = options.mode.toLowerCase();
-			if ($.inArray(options.mode, ['push', 'overlay', 'underlay', 'shrink']) == -1) {
-				options.mode = 'overlay';
+			if ($.inArray(options.mode, ['push', 'cover', 'base']) == -1) {
+				options.mode = 'push';
 			}
 
 			/* injectPosition */
@@ -166,46 +121,152 @@ $(function($) {
 			if ($.inArray(options.injectPosition, ['before', 'after']) == -1) {
 				options.injectPosition = 'before';
 			}
+			
+			/* Split animate options and properties */
+			var aniOpts = ['duration', 'easing', 'queue', 'specialEasing', 'step', 'progress', 'complete', 'start', 'done', 'fail', 'always'];
+			
+			/* Split animate */
+			elemOpts = {};
+			elemProps = {};
+			$.each(options.animate, function(key, value) {
+				if ($.inArray(key, aniOpts) != -1) {
+					elemOpts[key] = value;
+				}else{
+					elemProps[key] = value;
+				}
+			});
+			delete options.animate;
+			options.animate = {
+				opts: elemOpts,
+				props: elemProps,
+			};
+			
+			/* Split mainCanvasAnimate */
+			mainElemOpts = {};
+			mainElemProps = {};
+			$.each(options.mainCanvasAnimate, function(key, value) {
+				if ($.inArray(key, aniOpts) != -1) {
+					mainElemOpts[key] = value;
+				}else{
+					mainElemProps[key] = value;
+				}
+			});
+			delete options.mainCanvasAnimate;
+			options.mainCanvasAnimate = {
+				opts: mainElemOpts,
+				props: mainElemProps,
+			};
+			
+			/* mainCanvasAnimate.opts: extend options from `animate.opts` */
+			options.mainCanvasAnimate.opts = $.extend(true, {}, options.animate.opts, options.mainCanvasAnimate.opts);
+			
+			/* mainCanvasAnimate.complete: callbacks */
+			var mainElemCb = $.Callbacks();
+			mainElemCb.add(function() { // Set state
+				main.elem.state = 'animated';
+			});
+			mainElemCb.add(allAnimationsComplete); // Check all animations
+			if (typeof options.mainCanvasAnimate.opts.complete === 'function') {
+				mainElemCb.add(options.mainCanvasAnimate.opts.complete); // User complete function
+			}else if (typeof options.animate.opts.complete === 'function') {
+				mainElemCb.add(options.animate.opts.complete); // Fallback to opts.animate
+			}
+			options.mainCanvasAnimate.opts.complete = function() {
+				if (main.elem.state == 'progress') {
+					mainElemCb.fire(elem);
+				}
+			}
+			
+			/* animate.complete: callbacks */
+			var elemCb = $.Callbacks();
+			elemCb.add(function() { // Set state
+				elem.state = 'animated';
+			});
+			elemCb.add(allAnimationsComplete); // Check all animations			
+			if (typeof options.animate.opts.complete === 'function') {
+				elemCb.add(options.animate.opts.complete); // User complete function
+			}
+			options.animate.opts.complete = function() {
+				elemCb.fire(elem);
+			}
 
 			/* Bind options to element */
 			elem.data('offcanvas-options', options);
-
+			
+			/* Safe to global 'opts' */
 			opts = options;
-		}
+		};
 
 		/**
 		 * Apply animate-able styles
-		 * Use jQuery transit, if exists
+		 * Uses jQuery transit, if exists
 		 */
-		var applyStyle = function(el, props) {
-			/* .animate and .transition properties:
-			 *	( properties [, duration ] [, easing ] [, complete ] )
-			 */
-			var duration = props['duration'];
-			delete props['duration'];
-
-			var easing = props['easing'];
-			delete props['easing'];
-
-			var complete = props['complete'];
-			delete props['complete'];
-
-			/* Queues are never needed */
-			props['queue'] = false;
-
+		var applyStyle = function(el, props, options) {
 			/* Perform style changes with .transition */
-			if (opts.duration > 0 && typeof $.fn.transition !== 'undefined' && $.support.transition) {
-				el.transition(props, duration, easing, complete);
+			if (opts.animate !== false && typeof $.fn.transition !== 'undefined' && $.support.transition) {
+				el.transition(props, options);
 
 			/* Fallback to jQuery .animate */
-			}else if (opts.duration > 0 && opts.animateFallback) {
-				el.animate(props, duration, easing, complete);
+			}else if (opts.animate !== false && opts.jsFallback) {
+				el.animate(props, options);
 
 			/* Fallback to .css (no transition/animations) */
 			}else{
 				el.css(props);
 			}
-		}
+		};
+
+		/**
+		 * Get reseted properties of off-canvas element
+		 * @return object
+		 */
+		var defaultElemProperties = function() {
+			var elemProps = {};
+			if ($.inArray(opts.mode, ['cover', 'push']) != -1) {
+				if ($.inArray(opts.position, ['top', 'bottom']) != -1) {
+					elemProps[opts.position] = '-' + opts.css.height;
+				}else{
+					elemProps[opts.position] = '-' + opts.css.width;
+				}
+			}
+			return elemProps;
+		};
+
+		/**
+		 * Get reseted properties of main canvas element
+		 * @return object
+		 */
+		var defaultMainElemProperties = function() {
+			return {
+				top: '',
+				left: '',
+			};
+		};
+
+		/**
+		 * Check all animations; Set states and callbacks
+		 * Called after each animations
+		 */
+		var allAnimationsComplete = function() {
+			/* Check state of elem and main.elem */			
+			if (elem.state == 'animated' && main.elem.state == 'animated') {
+				if (elem.data('offcanvas-state') == 'pre-inactive') {
+					/* Set state */
+					elem.data('offcanvas-state', 'inactive');
+					main.elem.removeClass('offcanvas-main-inactive');
+					elem.addClass('offcanvas-inactive');
+					
+					/* User callback */
+					opts.onHideAfter(elem);
+				}else if (elem.data('offcanvas-state') == 'pre-active') {
+					/* Set state */
+					elem.data('offcanvas-state', 'active');
+					
+					/* User callback */
+					opts.onShowAfter(elem);
+				}
+			}
+		};
 
 		/** ==========================================================
 		 *  = Public Methods
@@ -214,141 +275,106 @@ $(function($) {
 		var methods = {
 
 			/**
-			 * Show
+			 * Show selected off-canvas element
 			 */
 			show: function() {
-				/* First, hide all */
-				methods.hideAll();
+				if (elem.data('offcanvas-state') == 'inactive') {
+					/* On show before */
+					opts.onShowBefore(elem);
+					elem.data('offcanvas-state', 'pre-active');
+					elem.state = 'progress';
+					main.elem.state = 'progress';
+					main.elem.addClass('offcanvas-main-inactive');
+					elem.removeClass('offcanvas-inactive');
 
-				/* Toggle classes */
-				main.elem.addClass('offcanvas-main-inactive');
-				elem.removeClass('offcanvas-inactive');
+					/* Properties */
+					var elemProps = {};
+					elemProps[opts.position] = 0;
+					var mainElemProps = {};
 
-				var defProps = {
-					easing:		opts.easing,
-					duration:	opts.duration,
+					switch (opts.mode) {
+
+						/* Push */
+						case 'push':
+							switch (opts.position) {
+								case 'top':
+									mainElemProps['top'] = opts.css.height;
+									break;
+								case 'right':
+									mainElemProps['left'] = '-' + opts.css.width;
+									break;
+								case 'bottom':
+									mainElemProps['top'] = '-' + opts.css.height;
+									break;
+								case 'left':
+								default:
+									mainElemProps['left'] = opts.css.width;
+									break;
+							}
+							break;
+
+						/* Base */
+						case 'base':
+							switch (opts.position) {
+								case 'top':
+									mainElemProps['top'] = opts.css.height;
+									break;
+								case 'right':
+									mainElemProps['left'] = '-' + opts.css.width;
+									break;
+								case 'bottom':
+									mainElemProps['top'] = '-' + opts.css.height;
+									break;
+								case 'left':
+								default:
+									mainElemProps['left'] = opts.css.width;
+									break;
+							}
+							break;
+
+						/* Default: Cover */
+						case 'cover':
+						default:
+							break;
+					}
 				}
 
-				switch (opts.mode) {
+				/* Move element */
+				$.extend(true, elemProps, opts.animate.props);
+				applyStyle(elem, elemProps, opts.animate.opts);
 
-					/* Push */
-					case 'push':
-						switch (opts.position) {
-							case 'top':
-								var wrapperProps = $.extend(true, {}, defProps, { top: opts.height });
-								break;
-							case 'right':
-								var wrapperProps = $.extend(true, {}, defProps, { left: '-'+opts.width });
-								break;
-							case 'bottom':
-								var wrapperProps = $.extend(true, {}, defProps, { top: '-'+opts.height });
-								break;
-							case 'left':
-							default:
-								var wrapperProps = $.extend(true, {}, defProps, { left: opts.width });
-								break;
-						}
-						applyStyle(main.elem.parent(), wrapperProps);
-						break;
+				/* Move main element */
+				$.extend(true, mainElemProps, opts.mainCanvasAnimate.props);
+				applyStyle(main.elem, mainElemProps, opts.mainCanvasAnimate.opts);
 
-					/* Shrink */
-					case 'shrink':
-						/* Struggle code here */
-						break;
-
-					/* Underlay */
-					case 'underlay':
-						switch (opts.position) {
-							case 'top':
-								var mainProps = $.extend(true, {}, defProps, { top: opts.height });
-								break;
-							case 'right':
-								var mainProps = $.extend(true, {}, defProps, { left: '-' + opts.width });
-								break;
-							case 'bottom':
-								var mainProps = $.extend(true, {}, defProps, { top: '-' + opts.height });
-								break;
-							case 'left':
-							default:
-								var mainProps = $.extend(true, {}, defProps, { left: opts.width });
-								break;
-						}
-						applyStyle(main.elem, mainProps);
-						break;
-
-					/* Default: Overlay */
-					case 'overlay':
-					default:
-						var elemProps = {};
-						elemProps[opts.position] = 0;
-						applyStyle(elem, $.extend(true, {}, defProps, elemProps));
-						break;
-				}
-
-				/* Hide main canvas overlay */
-				if (opts.mainCanvasOverlayDuration > 0 && opts.mainCanvasOverlay) {
-					applyStyle(main.elem.children('.offcanvas-main-overlay'), {
-						opacity:	1,
-						duration:	opts.mainCanvasOverlayDuration,
-					});
-				}
-
-				/* Set state */
-				elem.data('offcanvas-state', 'active');
+				/* Show main canvas overlay */
+				applyStyle(main.elem.children('.offcanvas-overlay'), {
+					opacity: 1,
+				}, opts.mainCanvasAnimate.opts);
 			},
 
 			/**
-			 * Hide
+			 * Hide selected off-canvas element
 			 */
 			hide: function() {
+				if (elem.data('offcanvas-state') == 'active') {
+					/* On hide before */
+					opts.onHideBefore(elem);
+					elem.data('offcanvas-state', 'pre-inactive');
+					elem.state = 'progress';
+					main.elem.state = 'progress';
 
-				/* Reset: Element */
-				var elemProps = {}
-				if ($.inArray(opts.mode, ['overlay', 'push']) != -1) {
-					elemProps = {
-						easing:		opts.easing,
-						duration:	opts.duration,
-					}
-					if ($.inArray(opts.position, ['top', 'bottom']) != -1) {
-						elemProps[opts.position] = '-'+opts.height;
-					}else{
-						elemProps[opts.position] = '-'+opts.width;
-					}
+					/* Reset: Off-canvas */
+					applyStyle(elem, defaultElemProperties(), opts.animate.opts);
+
+					/* Reset: Main canvas */
+					applyStyle(main.elem, defaultMainElemProperties(), opts.mainCanvasAnimate.opts);
+
+					/* Reset: Main canvas overlay */
+					applyStyle(main.elem.children('.offcanvas-overlay'), {
+						opacity: 0,
+					}, opts.mainCanvasAnimate.opts);
 				}
-				applyStyle(elem, elemProps);
-
-				/* Reset: Wrapper */
-				applyStyle(main.elem.parent(), {
-					top: 		'',
-					left: 		'',
-					easing:		opts.easing,
-					duration:	opts.duration
-				});
-
-				/* Reset: main canvas */
-				applyStyle(main.elem, {
-					top: 		'',
-					left: 		'',
-					easing:		opts.easing,
-					duration:	opts.duration,
-					complete: 	function() {
-						if (elem.data('offcanvas-state') == 'inactive') {
-							main.elem.removeClass('offcanvas-main-inactive');
-							elem.addClass('offcanvas-inactive');
-						}
-					}
-				});
-
-				/* Hide main canvas overlay */
-				if (opts.mainCanvasOverlayDuration > 0 && opts.mainCanvasOverlay) {
-					applyStyle(main.elem.children('.offcanvas-main-overlay'), {
-						opacity:	0,
-						duration:	opts.mainCanvasOverlayDuration,
-					});
-				}
-
-				/* Set state */
-				elem.data('offcanvas-state', 'inactive');
 			},
 
 			/**
@@ -370,15 +396,75 @@ $(function($) {
 					methods.hide();
 				}
 			},
-		}
+
+			/**
+			 * Wazzup now, hu?
+			 * @return string pre-active|active|pre-inactive|inactive
+			 */
+			state: function() {
+				return elem.data('offcanvas-state');
+			},
+
+			/**
+			 * Be fresh
+			 */
+			refresh: function() {
+				elem.data('offcanvas-state', 'inactive');
+
+				/* Reset: Main canvas */
+				main.elem.css(defaultMainElemProperties());
+				main.elem.removeClass('offcanvas-main-inactive');
+
+				/* Reset: Off-canvas */
+				elem.css(defaultElemProperties());
+				elem.addClass('offcanvas-inactive');
+
+				/* Reset: Main canvas overlay */
+				main.elem.children('.offcanvas-overlay').css('opacity', 0);
+			},
+
+			/**
+			 * Destroooy!!!!
+			 */
+			destroy: function() {
+				/* Destroy: off-canvas */
+				elem.unwrap();
+				elem.removeClass('offcanvas-element offcanvas-push offcanvas-cover offcanvas-base');
+				elem.removeClass('offcanvas-top offcanvas-right offcanvas-bottom offcanvas-left');
+				elem.css({
+					top: '',
+					right: '',
+					bottom: '',
+					left: '',
+					width: '',
+					height: '',
+				});
+				elem.removeData('offcanvas-linked-id offcanvas-options offcanvas-id offcanvas-main offcanvas-state');
+
+				/* Destroy: main canvas */
+				main.elem.removeClass('offcanvas-main offcanvas-inactive');
+				main.elem.css({
+					top: '',
+					right: '',
+					bottom: '',
+					left: '',
+					width: '',
+					height: '',
+				});
+				main.elem.removeData('offcanvas-elements');
+
+				/* Destroy: main canvas overlay */
+				main.elem.children('.offcanvas-overlay').remove();
+			},
+		};
 
 		/** ==========================================================
-		 *  = Start plugin
+		 *  = Plugin
 		 *  ==========================================================
 		 */
 
 		/**
-		 * Cloned elements
+		 * Cloned element
 		 */
 		if (typeof elem.data('offcanvas-linked-id') !== 'undefined') {
 			var linkedId = elem.data('offcanvas-linked-id');
@@ -391,7 +477,7 @@ $(function($) {
 			});
 		}
 
-		/* Set shorter vars */
+		/* Retrieve stored data */
 		if (typeof elem.data('offcanvas-main') !== 'undefined') {
 			main = elem.data('offcanvas-main');
 		}
@@ -402,23 +488,54 @@ $(function($) {
 		/**
 		 * Call plug-in methods / options
 		 */
-		/* Find meth - stands for methods! */
-		if (methods[methOrOpts]) {
+		/* Find methods */
+		if (methods[pluginArgs]) {
 			if (typeof elem.data('offcanvas-id') !== 'undefined') {
-				methods[methOrOpts].apply(this, Array.prototype.slice.call(arguments, 1));
+				methods[pluginArgs].apply(this, Array.prototype.slice.call(arguments, 1));
 			}else{
 				$.error('Element was not initialized with jQuery Offcanvas');
 			}
 
 		/* Find options */
-		}else if (typeof methOrOpts === 'object' || !methOrOpts) {
+		}else if (typeof pluginArgs === 'object' || !pluginArgs) {
 			init.apply(this, arguments);
 
 		/* Nothing found */
 		}else{
-			$.error('Public method "' +  methOrOpts + '" does not exist in jQuery Offcanvas');
+			$.error('Method "' +  pluginArgs + '" does not exist in jQuery Offcanvas');
 		}
 
 		return elem;
-	}
+	};
+	
+	/** ==========================================================
+	 *  = Default Options
+	 *  ==========================================================
+	 */
+	$.fn.offcanvas.defaults = {
+		/* Off-canvas */
+		position:			'left',			// top|right|bottom|left
+		mode:				'push',			// push|cover|base
+		injectPosition:		'before',		// before|after, relative to main canvas
+		cloneElement:		false,			// Instead of moving it
+		css:				{
+			width:				'100%',		// <length>, <percentage>
+			height:				'100%',		// <length>, <percentage>
+		},
+		jsFallback:			true,			// If browser doesn't support CSS3 transitions or Transit isn't available
+		animate:			{},				// Add further animation options @see http://api.jquery.com/animate/
+
+		/* Main canvas */
+		mainCanvas:			'#page',		// Selector or jQuery object
+		mainCanvasClick:	true,			// Make the main canvas click-able
+		mainCanvasAnimate:	{},				// Add further animation options @see http://api.jquery.com/animate/ - Overwrites 'animate'
+		mainCanvasCss:		{},				// Add CSS styles to the main canvas
+
+		/* Callbacks */
+		onShowBefore:		function() {},	// Triggered before the off-canvas is shown
+		onShowAfter:		function() {},	// Triggered after the off-canvas is shown
+		onHideBefore:		function() {},	// Triggered before the off-canvas is hidden
+		onHideAfter:		function() {},	// Triggered after the off-canvas is hidden
+		onMainCanvasClick:	function() {},	// Triggered after clicking on the main canvas
+	};
 }(jQuery));
