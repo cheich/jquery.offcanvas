@@ -1,0 +1,29 @@
+{
+  "name": "jquery.offcanvas",
+  "version": "3.0.0",
+  "title": "jQuery Offcanvas",
+  "description": "The easy way to arrange overloaded websites or to design user-friendly mobile navigations.",
+  "keywords": [
+    "jquery",
+    "jquery-plugin",
+    "ecosystem:jquery",
+    "off-canvas"
+  ],
+  "main": "build/js/jquery.offcanvas.min.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cheich/jquery.offcanvas.git"
+  },
+  "author": {
+    "name": "Christoph Heich",
+    "url": "http://christoph-heich.de"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/cheich/jquery.offcanvas/blob/master/LINCENSE.md"
+  },
+  "bugs": {
+    "url": "https://github.com/cheich/jquery.offcanvas/issues"
+  },
+  "homepage": "https://github.com/cheich/jquery.offcanvas"
+}
