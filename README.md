@@ -20,7 +20,7 @@ Include [jquery.offcanvas.min.js](https://github.com/cheich/jquery.offcanvas/blo
 
 ### 2. Identify main canvas
 
-It's required to set a main canvas. By default it's `#page`. You can wrap the whole page with `div#page` or set the main canvas selector via `mainCanvas`. **Important:** It's not allowed to set `body` as main canvas 'cause all elements are wrapped.
+It's required to set a main canvas. By default it's `#page`. You can wrap the whole page with `div#page` or set the main canvas selector via `mainCanvas`. **Important:** It's not allowed to set `body` as main canvas.
 
 ``` javascript
 $("#offcanvas-box").offcanvas({
@@ -37,13 +37,13 @@ $("#offcanvas-box").offcanvas(/* Pass options as object */); // Initialization
 
 $("button#toggle").click(function() {
     $("#offcanvas-box").offcanvas("toggle"); // Toggle after click a button
-                                             // Options are bind to the element
+                                             // Options are bound to the element
 });
 ```
 
 ## Dependencies
 
-jQuery Offcanvas requires jQuery 1.7.0+. Certainly, it works with jQuery 2.x as well.
+*jQuery Offcanvas* requires jQuery 1.7.0+. Certainly, it works with jQuery 2.x as well.
 
 It is not necessary, but the animations are much smoother with the newest version of [jQuery Transit](https://github.com/rstacruz/jquery.transit).
 
@@ -85,4 +85,4 @@ Each main version is mostly backward-compatible.
 See the [history](https://github.com/cheich/jquery.offcanvas/blob/master/HISTORY.md) to see all changes and fixes.
     
 ## License
-jQuery Offcanvas is released under the [MIT license](https://github.com/cheich/jquery.offcanvas/blob/master/LINCENSE.md)
+*jQuery Offcanvas* is released under the [MIT license](https://github.com/cheich/jquery.offcanvas/blob/master/LINCENSE.md)

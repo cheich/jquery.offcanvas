@@ -1,5 +1,9 @@
 # History
 
+## v3.0.1
+### FIXED
+ * iOS smooth scrolling
+
 ## v3.0
 ### ADDED
  * Methods `state`, `destroy` and `refresh`
