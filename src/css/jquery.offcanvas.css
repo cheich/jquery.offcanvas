@@ -1,5 +1,5 @@
 /*!
- * jquery.offcanvas.css v3.0 - 2015-04-02
+ * jquery.offcanvas.css v3.0.1 - 2015-05-06
  * Copyright 2014 Christoph Heich | https://cheich.github.io/jquery.offcanvas/
  * Released under the MIT license | https://github.com/cheich/jquery.offcanvas/blob/master/LINCENSE.md
  */
@@ -101,6 +101,9 @@ html, body {
 .offcanvas-left {
 	-webkit-transform: translate3d(0, 0, 0);
 	-webkit-backface-visibility: hidden;
+}
+.offcanvas-main {
+	-webkit-overflow-scrolling: touch;
 }
 
 /**

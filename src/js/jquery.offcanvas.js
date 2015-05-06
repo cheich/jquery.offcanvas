@@ -1,8 +1,10 @@
 /*!
- * jquery.offcanvas.js v3.0 - 2015-04-02
+ * jquery.offcanvas.js v3.0.1 - 2015-05-06
  * Copyright 2014 Christoph Heich | http://cheich.github.io/jquery.offcanvas/
  * Released under the MIT license | https://github.com/cheich/jquery.offcanvas/blob/master/LINCENSE.md
  * @TODO: Add swipe gestures (v3.1)
+ * @TODO: Add option: wrap (whether to wrap the off-canvas or not)
+ * @TODO: Add option: append|prepend (insert content)
  */
  
 $(function($) {
