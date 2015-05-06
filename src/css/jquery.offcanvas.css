@@ -90,18 +90,8 @@ html, body {
 }
 
 /**
- * Webkit fixes
+ * Webkit smooth scroll fix
  */
-.offcanvas-wrapper,
-.offcanvas-main,
-.offcanvas-main-overlay
-.offcanvas-top,
-.offcanvas-right,
-.offcanvas-bottom,
-.offcanvas-left {
-	-webkit-transform: translate3d(0, 0, 0);
-	-webkit-backface-visibility: hidden;
-}
 .offcanvas-main {
 	-webkit-overflow-scrolling: touch;
 }
