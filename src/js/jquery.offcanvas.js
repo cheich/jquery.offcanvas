@@ -7,7 +7,7 @@
  * @TODO: Add option: append|prepend (insert content)
  */
  
-$(function($) {
+!(function($) {
 
 	var elemCount = 0;
 
