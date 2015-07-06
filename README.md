@@ -1,10 +1,10 @@
-# [jQuery Offcanvas](http://christoph-heich.de/jquery-offcanvas/)
+# [jQuery Offcanvas](http://christoph-heich.de/jquery.offcanvas/)
 
 **jQuery Offcanvas** is the easy way to arrange overloaded websites or to design user-friendly mobile navigations.
 
 Set oversized content as off-canvas and let it flow-in, if needed - simple.
 
-Take a look at the [project page](http://christoph-heich.de/jquery-offcanvas/) to see full documentation.
+Take a look at the [project page](http://christoph-heich.de/jquery.offcanvas/) to see full documentation.
 
 ## Features
  * Completely responsive
@@ -60,7 +60,7 @@ It is not necessary, but the animations are much smoother with the newest versio
 
 ## Options
 
-To see the full documentation, go to the [project page](http://christoph-heich.de/jquery-offcanvas/). These are the default options:
+To see the full documentation, go to the [project page](http://christoph-heich.de/jquery.offcanvas/). These are the default options:
 
 ``` javascript
 defaults = {
