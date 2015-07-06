@@ -74,12 +74,12 @@ defaults = {
         height: '100%'
     },
     jsFallback:        true, // If browser doesn't support CSS3 transitions or Transit isn't available
-    animate:           {}, // Add further [animation](http://api.jquery.com/animate/) properties/options
+    animate:           {}, // Add further animation properties/options
     
     /* Main canvas */
     mainCanvas:        '#page', // Selector or jQuery object
     mainCanvasClick:   true, // Make the main canvas click-able
-    mainCanvasAnimate: {}, // Add further [animation](http://api.jquery.com/animate/) properties/options - Overwrites 'animate'
+    mainCanvasAnimate: {}, // Add further animation properties/options - Overwrites 'animate'
     mainCanvasCss:     {}, // Add CSS styles to the main canvas
     
     /* Callbacks */
