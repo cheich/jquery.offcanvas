@@ -1,4 +1,4 @@
-# [jQuery Offcanvas](https://cheich.github.io/jquery.offcanvas/)
+# [jQuery Offcanvas](http://christoph-heich.de/jquery-offcanvas/)
 
 **jQuery Offcanvas** is the easy way to arrange overloaded websites or to design user-friendly mobile navigations.
 
