@@ -8,7 +8,7 @@ Take a look at the [project page](http://christoph-heich.de/jquery.offcanvas/) t
 
 ## Features
  * Completely responsive
- * Built-in touch/swipe support
+ * Built-in touch/swipe support (comming soon)
  * Control of the entire behavior with lots of options
  * Fall-back for non-javascript users (will just don't do anything)
  * Lightweight - both, CSS and JS, just ~??? KB (minified and gzipped)
