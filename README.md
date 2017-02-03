@@ -1,5 +1,23 @@
 # [jQuery Offcanvas](http://christoph-heich.de/jquery.offcanvas/)
 
+---
+
+## Heads up! Version 4 is coming soon!
+
+Version 4 is a entirely rebuilt of this plugin. It will **not be compatible with older versions**!
+
+If you're still using v3 check out the [jquery.offcanvas-v3 branch](https://github.com/cheich/jquery.offcanvas/tree/jquery.offcanvas-v3). I will continue to fix bugs, if there are still be some.
+
+Features of the new version:
+
+- Finally touch and swipe support
+- Dropped dependencies of jQuery and jQuery Transit
+- Build with TypeScript and Sass
+- Animations only via CSS (transition)
+- Option for min-screen-width/max-screen-width to enable only on small devices
+
+---
+
 **jQuery Offcanvas** is the easy way to arrange overloaded websites or to design user-friendly mobile navigations.
 
 Set oversized content as off-canvas and let it flow-in, if needed - simple.
